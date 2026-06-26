@@ -1,1 +1,43 @@
+name: Build iOS Tweak
 
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Theos
+        uses: theos/theos-action@v1
+        with:
+          theos-sdks-path: ./sdks
+          cache-key: theos
+
+      - name: Install iOS SDK
+        run: |
+          git clone --depth=1 https://github.com/theos/sdks.git
+          mv sdks/iPhoneOS16.5.sdk $THEOS/sdks/
+
+      - name: Build Tweak
+        run: |
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+
+      - name: Upload DEB Package
+        uses: actions/upload-artifact@v3
+        with:
+          name: Example-tweak
+          path: packages/*.deb
+          if-no-files-found: error
+
+      - name: Upload DYLIB only
+        uses: actions/upload-artifact@v3
+        with:
+          name: Example-dylib
+          path: .theos/obj/arm64/*.dylib
+          if-no-files-found: warn
