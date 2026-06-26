@@ -1,0 +1,9 @@
+Package: com.imgui.example
+Name: IMGUI Mod Menu iOS Example
+Depends: mobilesubstrate
+Version: 1.0
+Architecture: iphoneos-arm64
+Section: Tweaks
+Description: hello!
+Maintainer: NAME
+Author: NAME
